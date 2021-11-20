@@ -26,9 +26,12 @@ impl Scheduler {
         let end = self
             .tasks
             .iter()
-            .try_fold(0, |acc, (_, task)| match task.earlier_start {
+            .try_fold(0, |acc, (name, task)| match task.earlier_start {
                 Some(start) => Ok(std::cmp::max(task.duration + start, acc)),
-                _ => Err(Error::new(ErrorKind::Other, "Graph is incomplete.")),
+                _ => Err(Error::new(
+                    ErrorKind::Other,
+                    format!("Circular dependency detected around {}", name),
+                )),
             })?;
         self.end = Some(end);
         let last_tasks = self.find_last_tasks()?;
