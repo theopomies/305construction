@@ -1,5 +1,6 @@
 mod args;
 use args::Arguments;
+use std::convert::TryFrom;
 
 mod scheduler;
 
